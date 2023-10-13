@@ -1,5 +1,7 @@
-cd ..
-cd .tasks
+#!/bin/bash
+
+cd .. || exit
+cd .tasks || exit
 
 # Definir códigos de escape para colores de texto
 ROJO="\e[31m"
@@ -8,7 +10,7 @@ AMARILLO="\e[33m"
 RESETEAR="\e[0m"
 
 echo -e "${AMARILLO}Diga el título de la tarea: ${RESETEAR}"
-read title
+read -r title  # Agregamos -r para evitar problemas con las barras invertidas
 
 # Validación de entrada
 if [ -z "$title" ] || [ -z "${title// }" ]; then
@@ -17,7 +19,7 @@ if [ -z "$title" ] || [ -z "${title// }" ]; then
 fi
 
 # Generar un nombre más amigable para el archivo (en minúsculas y con guiones bajos en lugar de espacios)
-file_name="$(echo $title | tr ' ' '_' | tr '[:upper:]' '[:lower:]').txt"
+file_name="$(echo "$title" | tr ' ' '_' | tr '[:upper:]' '[:lower:]').txt"
 
 # Comprobar si la tarea ya existe
 if [ -f "$file_name" ]; then
@@ -25,7 +27,7 @@ if [ -f "$file_name" ]; then
     exit 1
 else
     echo -e "${AMARILLO}Diga la descripción de la tarea: ${RESETEAR}"
-    read description
+    read -r description  # Agregamos -r para evitar problemas con las barras invertidas
 
     # Validación de entrada
     if [ -z "$description" ] || [ -z "${description// }" ]; then
@@ -34,7 +36,7 @@ else
     fi
 
     # Crear el archivo de la tarea
-    echo $description > "$file_name"
+    echo "$description" > "$file_name"  # Agregamos comillas para manejar espacios en la descripción
     echo -e "${VERDE}Se creó la tarea.${RESETEAR}"
 
     # Registrar la acción
