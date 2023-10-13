@@ -1,20 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
 cd .. || exit
 cd .tasks || exit
 
 # Definir códigos de escape para colores de texto
-ROJO="\e[31m"
-VERDE="\e[32m"
-AMARILLO="\e[33m"
-RESETEAR="\e[0m"
+ROJO="\033[31m"
+VERDE="\033[32m"
+AMARILLO="\033[33m"
+RESETEAR="\033[0m"
 
-echo -e "${AMARILLO}Diga el título de la tarea: ${RESETEAR}"
-read -r title  # Agregamos -r para evitar problemas con las barras invertidas
+echo "${AMARILLO}Diga el título de la tarea: ${RESETEAR}"
+read title  # Agregamos -r para evitar problemas con las barras invertidas
 
 # Validación de entrada
-if [ -z "$title" ] || [ -z "${title// }" ]; then
-    echo -e "${ROJO}El título no puede estar vacío.${RESETEAR}"
+if [ -z "$title" ] || [ -z "${title##* }" ]; then
+    echo "${ROJO}El título no puede estar vacío.${RESETEAR}"
     exit 1
 fi
 
@@ -23,21 +23,21 @@ file_name="$(echo "$title" | tr ' ' '_' | tr '[:upper:]' '[:lower:]').txt"
 
 # Comprobar si la tarea ya existe
 if [ -f "$file_name" ]; then
-    echo -e "${ROJO}La tarea ya existe.${RESETEAR}"
+    echo "${ROJO}La tarea ya existe.${RESETEAR}"
     exit 1
 else
-    echo -e "${AMARILLO}Diga la descripción de la tarea: ${RESETEAR}"
-    read -r description  # Agregamos -r para evitar problemas con las barras invertidas
+    echo "${AMARILLO}Diga la descripción de la tarea: ${RESETEAR}"
+    read description  # Agregamos -r para evitar problemas con las barras invertidas
 
     # Validación de entrada
-    if [ -z "$description" ] || [ -z "${description// }" ]; then
-        echo -e "${ROJO}La descripción no puede estar vacía.${RESETEAR}"
+    if [ -z "$description" ] || [ -z "${description##* }" ]; then
+        echo "${ROJO}La descripción no puede estar vacía.${RESETEAR}"
         exit 1
     fi
 
     # Crear el archivo de la tarea
     echo "$description" > "$file_name"  # Agregamos comillas para manejar espacios en la descripción
-    echo -e "${VERDE}Se creó la tarea.${RESETEAR}"
+    echo "${VERDE}Se creó la tarea.${RESETEAR}"
 
     # Registrar la acción
     echo "Nueva tarea creada: $title" >> ~/.tasks.log
